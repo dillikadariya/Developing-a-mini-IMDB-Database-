@@ -5,7 +5,7 @@ Designed and implemented a relational database using Oracle SQL to analyze IMDb 
 
 ## Overview
 
-This repository contains the design for an IMDb-inspired database. The database focuses on storing information about movies, TV shows, and the people involved in their creation. This repository also contains project report PDF file which documents the Relational Schema diagram and Entity Relationship Diagram along with query results.
+This repository contains the design for an IMDb-inspired database. The database focuses on storing information about movies, TV shows, and the people involved in their creation. This repository also contains project report PDF file which documents the Relational Schema diagram and Entity Relationship (ER) diagram along with some query results.
 
 ### Entities
 
