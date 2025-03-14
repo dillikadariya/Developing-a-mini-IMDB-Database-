@@ -1,0 +1,326 @@
+-- =========================
+-- DROPPING EXISTING TABLES
+-- =========================
+
+DROP TABLE IF EXISTS movies CASCADE;
+DROP TABLE IF EXISTS movie_review CASCADE;
+DROP TABLE IF EXISTS act_in_movies CASCADE;
+DROP TABLE IF EXISTS Actor_Award CASCADE;
+DROP TABLE IF EXISTS Director_Award CASCADE;
+DROP TABLE IF EXISTS Writer_Award CASCADE;
+DROP TABLE IF EXISTS Actor CASCADE;
+DROP TABLE IF EXISTS Director CASCADE;
+DROP TABLE IF EXISTS Writer CASCADE;
+DROP TABLE IF EXISTS tv_shows CASCADE;
+DROP TABLE IF EXISTS show_reviews CASCADE;
+DROP TABLE IF EXISTS acts_in_show CASCADE;
+DROP TABLE IF EXISTS episodes CASCADE;
+DROP TABLE IF EXISTS show_genre CASCADE;
+
+-- =========================
+-- CREATING TABLES
+-- =========================
+
+-- Movies Table
+CREATE TABLE movies (
+    movieName VARCHAR(35) PRIMARY KEY,
+    movieDuration VARCHAR(15),
+    Genre VARCHAR(15),
+    MPA_Rating VARCHAR(10),
+    Release_Date DATE,
+    Company VARCHAR(35),
+    D_Fname VARCHAR(25) NOT NULL,
+    D_Lname VARCHAR(25) NOT NULL,
+    W_Fname VARCHAR(25) NOT NULL,
+    W_Lname VARCHAR(25) NOT NULL
+);
+
+-- Movie Reviews Table
+CREATE TABLE movie_review (
+    User_name VARCHAR(15),
+    Review_Title VARCHAR(200) NOT NULL,
+    Review TEXT NOT NULL,
+    Rating INT CHECK (Rating BETWEEN 1 AND 5),
+    Review_Date DATE,
+    Movie_name VARCHAR(35) NOT NULL,
+    PRIMARY KEY (User_name, Movie_name)
+);
+
+-- Actors in Movies Table
+CREATE TABLE act_in_movies (
+    Fname VARCHAR(25),
+    Lname VARCHAR(25),
+    Movie_name VARCHAR(35) NOT NULL,
+    PRIMARY KEY (Fname, Lname, Movie_name)
+);
+
+-- Actor Awards Table
+CREATE TABLE Actor_Award (
+    Award_Name VARCHAR(100),
+    Award_Year INT,
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    PRIMARY KEY (Award_Name)
+);
+
+-- Director Awards Table
+CREATE TABLE Director_Award (
+    Award_Name VARCHAR(100),
+    Award_Year INT,
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    PRIMARY KEY (Award_Name)
+);
+
+-- Writer Awards Table
+CREATE TABLE Writer_Award (
+    Award_Name VARCHAR(100),
+    Award_Year INT,
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    PRIMARY KEY (Award_Name)
+);
+
+-- Actor Table
+CREATE TABLE Actor (
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    DOB DATE,
+    PRIMARY KEY (F_name, L_name)
+);
+
+-- Director Table
+CREATE TABLE Director (
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    DOB DATE,
+    PRIMARY KEY (F_name, L_name)
+);
+
+-- Writer Table
+CREATE TABLE Writer (
+    F_name VARCHAR(25),
+    L_name VARCHAR(25),
+    DOB DATE,
+    PRIMARY KEY (F_name, L_name)
+);
+
+-- TV Shows Table
+CREATE TABLE tv_shows (
+    showname VARCHAR(25) PRIMARY KEY,
+    startdate DATE,
+    enddate DATE,
+    mparating INT,
+    productioncompany VARCHAR(20),
+    W_Fname VARCHAR(15),
+    W_Lname VARCHAR(15),
+    D_Fname VARCHAR(15),
+    D_Lname VARCHAR(15)
+);
+
+-- TV Show Reviews Table
+CREATE TABLE show_reviews (
+    username VARCHAR(20) PRIMARY KEY,
+    reviewtitle VARCHAR(25),
+    review TEXT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    reviewdate DATE,
+    showname VARCHAR(25),
+    FOREIGN KEY (showname) REFERENCES tv_shows (showname)
+);
+
+-- Actors in TV Shows Table
+CREATE TABLE acts_in_show (
+    F_name VARCHAR(15),
+    L_name VARCHAR(15),
+    showname VARCHAR(25),
+    PRIMARY KEY (F_name, L_name, showname)
+);
+
+-- Episodes Table
+CREATE TABLE episodes (
+    showname VARCHAR(25),
+    episodecount INT,
+    seasoncount INT,
+    releasedate DATE,
+    enddate DATE,
+    PRIMARY KEY (showname, episodecount)
+);
+
+-- TV Show Genres Table
+CREATE TABLE show_genre (
+    genrename VARCHAR(15),
+    showname VARCHAR(25),
+    PRIMARY KEY (genrename, showname)
+);
+
+-- =========================
+-- ADDING FOREIGN KEYS
+-- =========================
+
+ALTER TABLE Actor_Award 
+ADD CONSTRAINT actor_award_fk 
+FOREIGN KEY (F_name, L_name) REFERENCES Actor(F_name, L_name);
+
+ALTER TABLE Director_Award 
+ADD CONSTRAINT director_award_fk 
+FOREIGN KEY (F_name, L_name) REFERENCES Director(F_name, L_name);
+
+ALTER TABLE Writer_Award 
+ADD CONSTRAINT writer_award_fk 
+FOREIGN KEY (F_name, L_name) REFERENCES Writer(F_name, L_name);
+
+ALTER TABLE movies 
+ADD CONSTRAINT movie_writer_fk 
+FOREIGN KEY (W_Fname, W_Lname) REFERENCES Writer(F_name, L_name);
+
+ALTER TABLE movies 
+ADD CONSTRAINT movie_director_fk 
+FOREIGN KEY (D_Fname, D_Lname) REFERENCES Director(F_name, L_name);
+
+ALTER TABLE movie_review 
+ADD CONSTRAINT movie_review_fk 
+FOREIGN KEY (Movie_name) REFERENCES movies(movieName);
+
+ALTER TABLE act_in_movies 
+ADD CONSTRAINT act_in_movie_fk 
+FOREIGN KEY (Movie_name) REFERENCES movies(movieName);
+
+ALTER TABLE act_in_movies 
+ADD CONSTRAINT actor_in_movie_fk 
+FOREIGN KEY (Fname, Lname) REFERENCES Actor(F_name, L_name);
+
+-- =========================
+-- SAMPLE DATA INSERTIONS
+-- =========================
+INSERT ALL
+INTO Actor (F_name, L_name, DOB) VALUES ('Leonardo', 'DiCaprio', TO_DATE('1974-11-11', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Joseph', 'Gordon-Levitt', TO_DATE('1981-02-17', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Meryl', 'Streep', TO_DATE('1949-06-22', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Tom', 'Hanks', TO_DATE('1956-07-09', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Denzel', 'Washington', TO_DATE('1954-12-28', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Jeremy', 'Renner', TO_DATE('1971-01-07', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Scarlett', 'Johansson', TO_DATE('1984-11-22', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Robert', 'De Niro', TO_DATE('1943-08-17', 'YYYY-MM-DD'))
+INTO Actor (F_name, L_name, DOB) VALUES ('Clint', 'Eastwood', TO_DATE('1930-05-31', 'YYYY-MM-DD'))
+SELECT * FROM dual;
+
+INSERT ALL
+INTO Director (F_name, L_name, DOB) VALUES ('Christopher', 'Nolan', TO_DATE('1970-07-30', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('David', 'Fincher', TO_DATE('1962-08-28', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Steven', 'Spielberg', TO_DATE('1946-12-18', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Quentin', 'Tarantino', TO_DATE('1963-03-27', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Kathryn', 'Bigelow', TO_DATE('1951-11-27', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Martin', 'Scorsese', TO_DATE('1942-11-17', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Bong', 'Joon Ho', TO_DATE('1969-09-14', 'YYYY-MM-DD'))
+INTO Director (F_name, L_name, DOB) VALUES ('Clint', 'Eastwood', TO_DATE('1930-05-31', 'YYYY-MM-DD'))
+SELECT * FROM dual;
+
+INSERT ALL
+INTO Writer (F_name, L_name, DOB) VALUES ('Aaron', 'Sorkin', TO_DATE('1961-06-09', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Nora', 'Ephron', TO_DATE('1941-05-19', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Charlie', 'Kaufman', TO_DATE('1958-11-19', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Greta', 'Gerwig', TO_DATE('1983-08-04', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Jordan', 'Peele', TO_DATE('1979-02-21', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Jonathan', 'Nolan', TO_DATE('1976-06-06', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Quentin', 'Tarantino', TO_DATE('1963-03-27', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Mark', 'Boal', TO_DATE('1973-01-01', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Steven', 'Zaillian', TO_DATE('1953-01-30', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Christopher', 'Nolan', TO_DATE('1970-07-30', 'YYYY-MM-DD'))
+INTO Writer (F_name, L_name, DOB) VALUES ('Vince', 'Gilligan', TO_DATE('1967-02-10', 'YYYY-MM-DD'))
+SELECT * FROM dual;
+
+INSERT ALL
+INTO tv_shows (showname, startdate, enddate, mparating, productioncompany, W_Fname, W_Lname, D_Fname, D_Lname) VALUES('Breaking Bad', TO_DATE('2008-01-20', 'YYYY-MM-DD'), TO_DATE('2013-09-29', 'YYYY-MM-DD'), 9, 'AMC', 'Vince', 'Gilligan', 'Bryan', 'Cranston')
+INTO tv_shows (showname, startdate, enddate, mparating, productioncompany, W_Fname, W_Lname, D_Fname, D_Lname) VALUES('Game of Thrones', TO_DATE('2011-04-17', 'YYYY-MM-DD'), TO_DATE('2019-05-19', 'YYYY-MM-DD'), 9, 'HBO', 'David', 'Benioff', 'D.B.', 'Weiss')
+INTO tv_shows (showname, startdate, enddate, mparating, productioncompany, W_Fname, W_Lname, D_Fname, D_Lname) VALUES('Stranger Things', TO_DATE('2016-07-15', 'YYYY-MM-DD'), NULL, 8, 'Netflix', 'The', 'Duffer', 'Matt', 'Duffer')
+INTO tv_shows (showname, startdate, enddate, mparating, productioncompany, W_Fname, W_Lname, D_Fname, D_Lname) VALUES('The Crown', TO_DATE('2016-11-04', 'YYYY-MM-DD'), NULL, 8, 'Netflix', 'Peter', 'Morgan', 'Stephen', 'Daldry')
+INTO tv_shows (showname, startdate, enddate, mparating, productioncompany, W_Fname, W_Lname, D_Fname, D_Lname) VALUES('The Mandalorian', TO_DATE('2019-11-12', 'YYYY-MM-DD'), NULL, 8, 'Disney+', 'Jon', 'Favreau', 'Dave', 'Filoni')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO movies (movieName, movieDuration, Genre, MPA_Rating, Release_Date, company, D_Fname, D_Lname, W_Fname, W_Lname) VALUES ('Inception', '2h 28m', 'Sci-Fi', 'PG-13', TO_DATE('2010-07-16', 'YYYY-MM-DD'), 'WarnerBros', 'Christopher', 'Nolan', 'Jonathan', 'Nolan')
+INTO movies (movieName, movieDuration, Genre, MPA_Rating, Release_Date, company, D_Fname, D_Lname, W_Fname, W_Lname) VALUES ('The Social Network', '2h 00m', 'Drama', 'PG-13', TO_DATE('2010-10-01', 'YYYY-MM-DD'), 'Columbia Pictures', 'David', 'Fincher', 'Aaron', 'Sorkin')
+INTO movies (movieName, movieDuration, Genre, MPA_Rating, Release_Date, company, D_Fname, D_Lname, W_Fname, W_Lname) VALUES ('Pulp Fiction', '2h 34m', 'Crime', 'R', TO_DATE('1994-10-14', 'YYYY-MM-DD'), 'Miramax Films', 'Quentin', 'Tarantino', 'Quentin', 'Tarantino')
+INTO movies (movieName, movieDuration, Genre, MPA_Rating, Release_Date, company, D_Fname, D_Lname, W_Fname, W_Lname) VALUES ('The Hurt Locker', '2h 11m', 'War', 'R', TO_DATE('2008-06-26', 'YYYY-MM-DD'), 'Summit Entertainment', 'Kathryn', 'Bigelow', 'Mark', 'Boal')
+INTO movies (movieName, movieDuration, Genre, MPA_Rating, Release_Date, company, D_Fname, D_Lname, W_Fname, W_Lname) VALUES ('The Irishman', '3h 29m', 'Crime', 'R', TO_DATE('2019-11-27', 'YYYY-MM-DD'), 'Netflix', 'Martin', 'Scorsese', 'Steven', 'Zaillian')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO Actor_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Academy Award- DiCaprio', 2016, 'Leonardo', 'DiCaprio')
+INTO Actor_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Golden GlobeDiCaprio', 2016, 'Leonardo', 'DiCaprio')
+INTO Actor_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Academy Award- Streep', 1983, 'Meryl', 'Streep')
+INTO Actor_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Golden GlobeWashington', 2007, 'Denzel', 'Washington')
+INTO Actor_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('BAFTA AwardJohansson', 2020, 'Scarlett', 'Johansson')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO Director_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Academy Award for Best Director- 1994', 1994, 'Steven', 'Spielberg')
+INTO Director_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Golden Globe for Best Director', 2010, 'Christopher', 'Nolan')
+INTO Director_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('BAFTA Award', 2008, 'Kathryn', 'Bigelow')
+INTO Director_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Cannes FilmFestival Award', 2019, 'Bong', 'Joon Ho')
+INTO Director_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Academy Award for Best Director- 2020', 2020, 'Bong', 'Joon Ho')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO Writer_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Academy Award for Best Original Screenplay', 2011, 'Aaron', 'Sorkin')
+INTO Writer_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Golden Globe for Best Screenplay', 2010, 'Christopher', 'Nolan')
+INTO Writer_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Writers Guild Award- 2011', 2011, 'Aaron', 'Sorkin')
+INTO Writer_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('BAFTA Award', 2014, 'Jonathan', 'Nolan')
+INTO Writer_Award (Award_Name, Award_Year, F_name, L_name) VALUES ('Writers Guild Award- 1998', 1998, 'Vince', 'Gilligan')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO acts_in_show (F_name, L_name, showname) VALUES ('Bryan', 'Cranston', 'Breaking Bad')
+INTO acts_in_show (F_name, L_name, showname) VALUES ('Aaron', 'Paul', 'Breaking Bad')
+INTO acts_in_show (F_name, L_name, showname) VALUES ('Emilia', 'Clarke', 'Game of Thrones')
+INTO acts_in_show (F_name, L_name, showname) VALUES ('Peter', 'Dinklage', 'Game of Thrones')
+INTO acts_in_show (F_name, L_name, showname) VALUES ('Millie', 'Bobby Brown', 'Stranger Things')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Leonardo', 'DiCaprio', 'Inception')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Joseph', 'Gordon-Levitt', 'Inception')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Meryl', 'Streep', 'The Social Network')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Tom', 'Hanks', 'The Social Network')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Denzel', 'Washington', 'The HurtLocker')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Jeremy', 'Renner', 'The Hurt Locker')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Scarlett', 'Johansson', 'The Irishman')
+INTO act_in_movies (Fname, Lname, Movie_name) VALUES ('Robert', 'De Niro', 'The Irishman')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('john_doe', 'Mind-Bending Thriller', 'Inception is a masterpiece that challenges the boundaries of reality and dreams.', 5, TO_DATE('2024-12-01', 'YYYY-MM-DD'), 'Inception')
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('jane_smith', 'A Social Media Saga', 'The Social Network offers a gripping portrayal of ambition and betrayal.', 4, TO_DATE('2024-12-02', 'YYYY-MM-DD'), 'The Social Network')
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('alice_jones', 'Quentin''s Best', 'Pulp Fiction is a timeless classic with unforgettable characters and dialogue.', 5, TO_DATE('2024-12-03', 'YYYY-MM-DD'), 'Pulp Fiction')
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('bob_brown', 'Intense and Gripping', 'The Hurt Locker provides a raw and intense look into the life of a bomb disposal expert.', 4, TO_DATE('2024-12-04', 'YYYY-MM-DD'), 'The Hurt Locker')
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('charlie_davis', 'Epic Crime Drama', 'The Irishman is a compelling and epic tale of crime and loyalty over decades.', 5, TO_DATE('2024-12-05', 'YYYY-MM-DD'), 'The Irishman')
+INTO movie_review (User_name, Review_Title, Review, Rating, Review_Date, Movie_name) VALUES('danielle_taylor', 'War is Hell', 'The Hurt Locker offers a gripping and realistic portrayal of war through the eyes of a bomb disposal expert.', 4, TO_DATE('2024-12-06', 'YYYY-MM-DD'), 'The Hurt Locker')
+SELECT * FROM dual;
+
+INSERT ALL
+INTO show_reviews (username, reviewtitle, review, rating, reviewdate, showname) VALUES('jesse_pinkman', 'Chemistry of Perfection', 'Breaking Bad is a masterclass in storytelling, taking viewers on an unforgettable journey of moral decay and redemption. Walter White’s transformation is both terrifying and fascinating.', 5, TO_DATE('2024-12-01', 'YYYY-MM-DD'), 'Breaking Bad')
+INTO show_reviews (username, reviewtitle, review, rating, reviewdate, showname) VALUES('dragonqueen', 'Throne of Greatness', 'Game of Thrones redefined television with its complex characters, shocking twists, and intricate political drama. The final season may divide opinions, but its legacy is undeniable.', 4, TO_DATE('2024-12-02', 'YYYY-MM-DD'), 'Game of Thrones')
+INTO show_reviews (username, reviewtitle, review, rating, reviewdate, showname) VALUES('upside_downer', 'Nostalgic Thrills', 'Stranger Things combines ‘80s nostalgia with supernatural horror, creating a thrilling and emotional rollercoaster. The kids'' performances are fantastic, making it a standout show.', 5, TO_DATE('2024-12-03', 'YYYY-MM-DD'), 'Stranger Things')
+INTO show_reviews (username, reviewtitle, review, rating, reviewdate, showname) VALUES('royal_obsessed', 'A Royal Achievement', 'The Crown is a lavish and insightful look into the life of the British monarchy. Its attention to historical detail and phenomenal acting make it a must-watch.', 5, TO_DATE('2024-12-04', 'YYYY-MM-DD'), 'The Crown')
+INTO show_reviews (username, reviewtitle, review, rating, reviewdate, showname) VALUES('baby_yoda_fan', 'The Way of Great TV', 'The Mandalorian brings the Star Wars universe to life with a mix of adventure, heart, and unforgettable characters. Grogu (Baby Yoda) steals every scene!', 5, TO_DATE('2024-12-05', 'YYYY-MM-DD'), 'The Mandalorian')
+SELECT * FROM dual;
+
+-- ============ table descriptions
+DESCRIBE movies;
+DESCRIBE movie_review;
+DESCRIBE act_in_movies;
+DESCRIBE tv_shows;
+DESCRIBE show_reviews;
+DESCRIBE acts_in_show;
+DESCRIBE episodes; 
+DESCRIBE show_genre; 
+DESCRIBE Actor;
+DESCRIBE Actor_Award;
+DESCRIBE Director;
+DESCRIBE Director_Award;
+DESCRIBE Writer;
+DESCRIBE Writer_Award;
+-- =========================
+-- END OF SCRIPT
+-- =========================
